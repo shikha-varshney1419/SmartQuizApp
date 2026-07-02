@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+
+    <div class="card shadow p-4 mx-auto" style="max-width: 500px;">
+
+        <h2 class="mb-3">🎯 Quiz Result</h2>
+
+        <!-- SCORE -->
+        <h1 class="display-4 text-primary">
+            {{ score }}/{{ total }}
+        </h1>
+
+        <!-- PERCENTAGE -->
+        <h3 class="mt-2">
+            {{ percentage }}%
+        </h3>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress mt-3 mb-3">
+            <div class="progress-bar bg-success"
+                 role="progressbar"
+                 style="width: {{ percentage }}%;">
+            </div>
+        </div>
+
+        <!-- PASS / FAIL -->
+        {% if percentage >= 50 %}
+            <h4 class="text-success">🎉 Congratulations! You Passed</h4>
+        {% else %}
+            <h4 class="text-danger">❌ Try Again</h4>
+        {% endif %}
+
+        <p class="text-muted mt-2">
+            Keep practicing to improve your score 🚀
+        </p>
+
+        <!-- BUTTONS -->
+        <div class="mt-4">
+
+            <a href="/certificate" class="btn btn-success m-2">
+                🎓 View Certificate
+            </a>
+
+            <a href="/download_certificate" class="btn btn-dark m-2">
+                📄 Download PDF
+            </a>
+
+            <a href="/dashboard" class="btn btn-primary m-2">
+                🏠 Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

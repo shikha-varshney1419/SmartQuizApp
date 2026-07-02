@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">📝 Quiz</h2>
+
+<form action="/submit_quiz/{{ subject_id }}/{{ topic_id }}" method="POST">
+
+{% for q in questions %}
+
+<div class="card shadow mb-4">
+
+    <div class="card-body">
+
+        <h5 class="mb-3">
+            Q{{ loop.index }}. {{ q[3] }}
+        </h5>
+
+        <div>
+            <input type="radio" name="q{{ q[0] }}" value="{{ q[4] }}" required>
+            {{ q[4] }}
+        </div>
+
+        <div>
+            <input type="radio" name="q{{ q[0] }}" value="{{ q[5] }}">
+            {{ q[5] }}
+        </div>
+
+        <div>
+            <input type="radio" name="q{{ q[0] }}" value="{{ q[6] }}">
+            {{ q[6] }}
+        </div>
+
+        <div>
+            <input type="radio" name="q{{ q[0] }}" value="{{ q[7] }}">
+            {{ q[7] }}
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<div class="text-center">
+    <button type="submit" class="btn btn-success btn-lg">
+        Submit Quiz
+    </button>
+</div>
+
+<h4 class="text-center text-danger">
+    ⏱ Time Left: <span id="timer">60</span> seconds
+</h4>
+
+</form> 
+
+<script>
+let timeLeft = 60;
+
+const timer = setInterval(() => {
+
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+
+    if (timeLeft <= 0) {
+        clearInterval(timer);
+        alert("Time is up! Auto submitting quiz.");
+        document.querySelector("form").submit();
+    }
+
+}, 1000);
+</script>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">📚 Select a Topic</h2>
+
+<p class="text-center text-muted">
+    Choose a topic to start your quiz
+</p>
+
+<div class="row">
+
+    {% for topic in topics %}
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow h-100">
+
+            <div class="card-body text-center">
+
+                <h4>{{ topic[2] }}</h4>
+
+                <a href="/quiz/{{ subject_id }}/{{ topic[0] }}"
+                   class="btn btn-success mt-3">
+                    ▶ Start Quiz
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

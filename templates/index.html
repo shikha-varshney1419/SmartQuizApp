@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="container text-center mt-5">
+
+    <h1 class="display-4 fw-bold text-primary">
+        🎓 Smart Quiz Platform
+    </h1>
+
+    <p class="lead text-muted mt-3">
+        Practice UPSC, JEE & SSC with smart quizzes, analytics and certificates
+    </p>
+
+    <div class="mt-4">
+
+        <a href="/login" class="btn btn-primary btn-lg m-2">
+            Login
+        </a>
+
+        <a href="/signup" class="btn btn-success btn-lg m-2">
+            Signup
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<!-- FEATURES SECTION -->
+<div class="container">
+
+    <h2 class="text-center mb-4">🚀 Features</h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow p-3 h-100">
+                <h3>📘 UPSC</h3>
+                <p>Topic-wise practice for UPSC exam</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow p-3 h-100">
+                <h3>⚛️ JEE</h3>
+                <p>Physics, Chemistry & Maths quizzes</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow p-3 h-100">
+                <h3>🏛 SSC</h3>
+                <p>Reasoning, GK & Quant practice</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- EXTRA FEATURES -->
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">⭐ More Features</h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow p-3">
+                <h4>🏆 Leaderboard</h4>
+                <p>Compare your performance</p>
+                <a href="/leaderboard" class="btn btn-warning btn-sm">View</a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow p-3">
+                <h4>📊 Analytics</h4>
+                <p>Track your progress</p>
+                <a href="/analytics" class="btn btn-info btn-sm">View</a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow p-3">
+                <h4>📄 Certificate</h4>
+                <p>Download achievement certificate</p>
+                <a href="/certificate" class="btn btn-success btn-sm">Get</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- WHY CHOOSE US -->
+<div class="container mt-5 text-center">
+
+    <h2>💡 Why Smart Quiz?</h2>
+
+    <p class="text-muted">
+        Fast • Easy • Free • Exam Oriented • Performance Tracking
+    </p>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center mt-5 p-3 bg-light">
+
+    <p class="mb-0">
+        © 2026 Smart Quiz Platform
+    </p>
+
+    <small>
+        Created by Shikha Varshney
+    </small>
+
+</footer>
+
+{% endblock %}

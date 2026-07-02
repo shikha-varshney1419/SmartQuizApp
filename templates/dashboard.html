@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-center py-4">
+
+    <h1 class="fw-bold">🎓 Smart Quiz Platform</h1>
+    <p class="text-muted">Practice UPSC, JEE & SSC</p>
+
+    <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+
+</div>
+
+<hr>
+
+<!-- ⭐ QUICK STATS -->
+<div class="row text-center mb-4">
+
+    <div class="col-md-4">
+        <div class="card p-3 shadow">
+            <h4>📚 Subjects</h4>
+            <p>{{ subjects|length }}</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 shadow">
+            <h4>🏆 Leaderboard</h4>
+            <a href="/leaderboard" class="btn btn-warning btn-sm mt-2">View</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 shadow">
+            <h4>📊 Analytics</h4>
+            <a href="/analytics" class="btn btn-info btn-sm mt-2">View</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- ⭐ SUBJECTS -->
+<div class="row">
+
+    {% for subject in subjects %}
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow text-center h-100">
+
+            <div class="card-body">
+
+                <h3>{{ subject[1] }}</h3>
+                <p>{{ subject[2] }}</p>
+
+                <a href="/topics/{{ subject[0] }}" class="btn btn-primary">
+                    Start Quiz
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

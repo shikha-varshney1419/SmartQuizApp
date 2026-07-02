@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">📊 Your Performance Analytics</h2>
+
+<div class="container">
+
+    <div class="row text-center">
+
+        <div class="col-md-3">
+            <div class="card shadow p-3 mb-3">
+                <h5>Total Quizzes</h5>
+                <h2>{{ total_quizzes }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow p-3 mb-3">
+                <h5>Average Score</h5>
+                <h2>{{ avg_score }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow p-3 mb-3">
+                <h5>Best Score</h5>
+                <h2>{{ best_score }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow p-3 mb-3">
+                <h5>Subjects Attempted</h5>
+                <h2>{{ subjects }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+
+    <div class="card shadow p-5 mx-auto"
+         style="max-width: 800px; border: 8px solid #1e88e5; border-radius: 15px;">
+
+        <h1 class="text-primary fw-bold">
+            🎓 Certificate of Achievement
+        </h1>
+
+        <hr>
+
+        <p class="mt-4 fs-5">
+            This is to certify that
+        </p>
+
+        <h2 class="text-dark fw-bold">
+            {{ name }}
+        </h2>
+
+        <p class="fs-5 mt-3">
+            has successfully completed the <b>Smart Quiz Platform</b>
+        </p>
+
+        <p class="text-muted mt-2">
+            and demonstrated knowledge in competitive exams preparation.
+        </p>
+
+        <br>
+
+        <h4 class="text-success">
+            🏆 Congratulations!
+        </h4>
+
+        <br>
+
+        <p class="text-muted">
+            Keep learning and improving 🚀
+        </p>
+
+        <!-- BUTTONS -->
+        <div class="mt-4">
+
+            <a href="/download_certificate" class="btn btn-dark btn-lg m-2">
+                📄 Download PDF
+            </a>
+
+            <a href="/dashboard" class="btn btn-primary btn-lg m-2">
+                🏠 Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
