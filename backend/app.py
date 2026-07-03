@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 import pymysql
+import os
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -12,10 +13,11 @@ app = Flask(
 app.secret_key = "smartquiz_secret_key_123"
 
 db = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="MySQL@123123123",
-    database="smart_quiz",
+    host=os.getenv("MYSQLHOST"),
+    user=os.getenv("MYSQLUSER"),
+    password=os.getenv("MYSQLPASSWORD"),
+    database=os.getenv("MYSQLDATABASE"),
+    port=int(os.getenv("MYSQLPORT")),
     autocommit=True
 )
 
