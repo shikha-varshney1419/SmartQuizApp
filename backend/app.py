@@ -1,13 +1,19 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
+from dotenv import load_dotenv
 import pymysql
 import os
+load_dotenv()
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
+import os
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 app = Flask(
     __name__,
-    template_folder="../templates",
-    static_folder="../static"
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
 )
 
 app.secret_key = "smartquiz_secret_key_123"
@@ -95,13 +101,7 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM subjects")
-    subjects = cursor.fetchall()
-
-    return render_template("dashboard.html", subjects=subjects)
-
-
+    return render_template("exam_select.html")
 # ---------------- TOPICS ----------------
 @app.route("/topics/<int:subject_id>")
 def topics(subject_id):
@@ -117,15 +117,15 @@ def topics(subject_id):
     topics = cursor.fetchall()
 
     return render_template(
-        "topics.html",
-        topics=topics,
-        subject_id=subject_id
-    )
-
+    "topics.html",
+    topics=topics,
+    subject_id=subject_id
+)
 
 # ---------------- QUIZ ----------------
 @app.route("/quiz/<int:subject_id>/<int:topic_id>")
 def quiz(subject_id, topic_id):
+
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -138,6 +138,10 @@ def quiz(subject_id, topic_id):
 
     questions = cursor.fetchall()
 
+    print("Subject:", subject_id)
+    print("Topic:", topic_id)
+    print("Questions:", questions)
+
     cursor.execute(
         "SELECT topic_name FROM topics WHERE id=%s",
         (topic_id,)
@@ -148,11 +152,10 @@ def quiz(subject_id, topic_id):
     return render_template(
         "quiz.html",
         questions=questions,
-        topic_name=topic[0],
+        topic_name=topic[0] if topic else "Quiz",
         subject_id=subject_id,
         topic_id=topic_id
     )
-
 
 # ---------------- SUBMIT QUIZ ----------------
 @app.route("/submit_quiz/<int:subject_id>/<int:topic_id>", methods=["POST"])
@@ -288,8 +291,32 @@ def download_certificate():
     doc.build(content)
 
     return send_file(file_name, as_attachment=True)
+   
+@app.route("/subjects/<exam>")
+def subjects(exam):
 
+    cursor = db.cursor()
 
+    if exam == "UPSC":
+        subject_id = 12
+    elif exam == "JEE":
+        subject_id = 13
+    elif exam == "SSC":
+        subject_id = 14
+    else:
+        return "Invalid Exam"
+
+    cursor.execute(
+        "SELECT * FROM subjects WHERE id=%s",
+        (subject_id,)
+    )
+
+    subjects = cursor.fetchall()
+
+    return render_template(
+        "dashboard.html",
+        subjects=subjects
+    )
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     print(app.url_map)

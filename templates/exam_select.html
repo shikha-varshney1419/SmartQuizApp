@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-center mt-5">
+    <h2>🎓 Select Your Exam</h2>
+    <p class="text-muted">Choose an exam to continue</p>
+</div>
+
+<div class="row mt-5">
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow text-center p-4">
+            <h3>📘 UPSC</h3>
+            <p>Civil Services Preparation</p>
+
+            <a href="/subjects/UPSC" class="btn btn-primary">
+                Select
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow text-center p-4">
+            <h3>🏛 SSC</h3>
+            <p>Government Exam Practice</p>
+
+            <a href="/subjects/SSC" class="btn btn-success">
+                Select
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow text-center p-4">
+            <h3>⚛️ JEE</h3>
+            <p>Engineering Entrance</p>
+
+            <a href="/subjects/JEE" class="btn btn-danger">
+                Select
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

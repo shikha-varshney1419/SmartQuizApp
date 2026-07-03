@@ -2,3 +2,4 @@ Flask
 PyMySQL
 reportlab
 gunicorn
+python-dotenv
