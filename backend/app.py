@@ -55,10 +55,13 @@ def login():
     try:
         data = request.get_json()
 
+        email = data.get("email", "").strip()
+        password = data.get("password", "").strip()
+
         cursor = db.cursor()
         cursor.execute(
             "SELECT * FROM users WHERE email=%s AND password=%s",
-            (data["email"], data["password"])
+            (email, password)
         )
 
         user = cursor.fetchone()
@@ -77,6 +80,7 @@ def login():
     except Exception as e:
         print("LOGIN ERROR:", e)
         return jsonify({"message": "Server Error"}), 500
+                
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
