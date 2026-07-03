@@ -47,34 +47,36 @@ def register():
 
 
 # ---------------- LOGIN ----------------
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html")
 
+    try:
+        data = request.get_json()
 
-@app.route("/login", methods=["POST"])
-def login_user():
-    data = request.get_json()
+        cursor = db.cursor()
+        cursor.execute(
+            "SELECT * FROM users WHERE email=%s AND password=%s",
+            (data["email"], data["password"])
+        )
 
-    cursor = db.cursor()
-    cursor.execute(
-        "SELECT * FROM users WHERE email=%s AND password=%s",
-        (data["email"], data["password"])
-    )
+        user = cursor.fetchone()
 
-    user = cursor.fetchone()
+        if user:
+            session["user_id"] = user[0]
+            session["user_name"] = user[1]
 
-    if user:
-        session["user_id"] = user[0]
-        session["user_name"] = user[1]
+            return jsonify({
+                "message": "Login Successful",
+                "redirect": "/dashboard"
+            })
 
-        return jsonify({
-            "message": "Login Successful",
-            "redirect": "/dashboard"
-        })
+        return jsonify({"message": "Invalid Email or Password"})
 
-    return jsonify({"message": "Invalid Email or Password"})
-
+    except Exception as e:
+        print("LOGIN ERROR:", e)
+        return jsonify({"message": "Server Error"}), 500
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
