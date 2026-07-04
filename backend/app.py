@@ -284,7 +284,7 @@ def certificate():
 
 @app.route("/download_certificate")
 def download_certificate():
-    
+
     print("NEW CERTIFICATE FUNCTION RUNNING")
 
     if "user_id" not in session:
@@ -319,7 +319,19 @@ def download_certificate():
     )
 
     name = session.get("user_name", "Student")
-    percentage = session.get("percentage", 0)
+    cursor = db.cursor()
+
+cursor.execute("""
+    SELECT percentage
+    FROM quiz_attempts
+    WHERE user_id=%s
+    ORDER BY id DESC
+    LIMIT 1
+""", (session["user_id"],))
+
+result = cursor.fetchone()
+
+percentage = result[0] if result else 0
 
     content = []
 
