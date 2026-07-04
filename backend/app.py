@@ -191,7 +191,12 @@ def submit_quiz(subject_id, topic_id):
             score += 1
 
     total = len(questions)
+
+
     percentage = (score / total * 100) if total > 0 else 0
+    
+    session["percentage"] = round(percentage, 2)
+    session["score"] = score
 
     cursor.execute("""
         INSERT INTO quiz_attempts
