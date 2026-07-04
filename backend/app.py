@@ -211,10 +211,13 @@ def submit_quiz(subject_id, topic_id):
 @app.route("/leaderboard")
 def leaderboard():
 
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     cursor = db.cursor()
 
     cursor.execute("""
-        SELECT u.name, MAX(q.percentage) as best_score
+        SELECT u.name, MAX(q.percentage) AS best_score
         FROM quiz_attempts q
         JOIN users u ON q.user_id = u.id
         GROUP BY q.user_id
@@ -224,7 +227,10 @@ def leaderboard():
 
     leaders = cursor.fetchall()
 
-    return str(leaders)
+    return render_template(
+        "leaderboard.html",
+        leaders=leaders
+    )
 
 
 # ---------------- ANALYTICS ----------------
