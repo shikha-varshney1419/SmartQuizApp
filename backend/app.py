@@ -224,7 +224,7 @@ def leaderboard():
 
     leaders = cursor.fetchall()
 
-    return render_template("leaderboard.html", leaders=leaders)
+    return str(leaders)
 
 
 # ---------------- ANALYTICS ----------------
