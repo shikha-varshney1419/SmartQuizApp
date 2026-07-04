@@ -428,7 +428,7 @@ def subjects(exam):
         return "Invalid Exam"
 
     cursor.execute(
-    "SELECT * FROM subjects WHERE exam_type=%s",
+    "SELECT * FROM subjects WHERE name=%s",
     (exam_name,)
     )
 
