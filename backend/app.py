@@ -6,6 +6,12 @@ load_dotenv()
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.colors import darkblue, gold, black
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Spacer, Table, TableStyle
+from reportlab.lib.units import inch
+
 import os
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -285,19 +291,93 @@ def download_certificate():
     file_name = "certificate.pdf"
 
     doc = SimpleDocTemplate(file_name)
-    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "Title",
+        fontSize=28,
+        alignment=TA_CENTER,
+        textColor=darkblue,
+        spaceAfter=20
+    )
+
+    heading_style = ParagraphStyle(
+        "Heading",
+        fontSize=20,
+        alignment=TA_CENTER,
+        textColor=gold,
+        spaceAfter=15
+    )
+
+    normal_style = ParagraphStyle(
+        "Normal",
+        fontSize=14,
+        alignment=TA_CENTER,
+        textColor=black,
+        leading=24
+    )
+
+    name = session.get("user_name", "Student")
+    percentage = session.get("percentage", 0)
 
     content = []
 
-    name = session.get("user_name")
+    content.append(Spacer(1, 0.4 * inch))
 
-    content.append(Paragraph("🎓 Certificate of Completion", styles["Title"]))
-    content.append(Paragraph(f"This certifies that <b>{name}</b> has completed Smart Quiz.", styles["Normal"]))
+    content.append(Paragraph("🏆 SMART QUIZ PLATFORM", title_style))
+
+    content.append(Paragraph("Certificate of Achievement", heading_style))
+
+    content.append(Spacer(1, 0.2 * inch))
+
+    content.append(Paragraph(
+        "This certificate is proudly presented to",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.15 * inch))
+
+    content.append(Paragraph(
+        f"<b><font size='22'>{name}</font></b>",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.2 * inch))
+
+    content.append(Paragraph(
+        "for successfully completing the quiz.",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.2 * inch))
+
+    content.append(Paragraph(
+        f"<b>Final Score : {percentage}%</b>",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.5 * inch))
+
+    table = Table([
+        ["Certified By", "Project"],
+        ["Shikha Varshney", "Smart Quiz Platform"]
+    ], colWidths=[220, 220])
+
+    table.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 1, gold),
+        ('BACKGROUND', (0,0), (-1,0), darkblue),
+        ('TEXTCOLOR', (0,0), (-1,0), 'white'),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('FONTSIZE', (0,0), (-1,-1), 14),
+        ('BOTTOMPADDING', (0,0), (-1,0), 10),
+    ]))
+
+    content.append(table)
 
     doc.build(content)
 
     return send_file(file_name, as_attachment=True)
-   
+
+
 @app.route("/subjects/<exam>")
 def subjects(exam):
 
