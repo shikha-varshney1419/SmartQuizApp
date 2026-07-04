@@ -284,6 +284,8 @@ def certificate():
 
 @app.route("/download_certificate")
 def download_certificate():
+    
+    print("NEW CERTIFICATE FUNCTION RUNNING")
 
     if "user_id" not in session:
         return redirect(url_for("login"))
