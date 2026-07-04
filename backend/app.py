@@ -281,11 +281,8 @@ def certificate():
         name=session.get("user_name")
     )
 
-
 @app.route("/download_certificate")
 def download_certificate():
-
-    print("NEW CERTIFICATE FUNCTION RUNNING")
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -319,26 +316,12 @@ def download_certificate():
     )
 
     name = session.get("user_name", "Student")
-    cursor = db.cursor()
-
-cursor.execute("""
-    SELECT percentage
-    FROM quiz_attempts
-    WHERE user_id=%s
-    ORDER BY id DESC
-    LIMIT 1
-""", (session["user_id"],))
-
-result = cursor.fetchone()
-
-percentage = result[0] if result else 0
+    percentage = session.get("percentage", 0)
 
     content = []
 
     content.append(Spacer(1, 0.4 * inch))
-
-    content.append(Paragraph("🏆 SMART QUIZ PLATFORM", title_style))
-
+    content.append(Paragraph("SMART QUIZ PLATFORM", title_style))
     content.append(Paragraph("Certificate of Achievement", heading_style))
 
     content.append(Spacer(1, 0.2 * inch))
@@ -358,7 +341,7 @@ percentage = result[0] if result else 0
     content.append(Spacer(1, 0.2 * inch))
 
     content.append(Paragraph(
-        "for successfully completing the quiz.",
+        "For successfully completing the quiz.",
         normal_style
     ))
 
@@ -371,18 +354,21 @@ percentage = result[0] if result else 0
 
     content.append(Spacer(1, 0.5 * inch))
 
-    table = Table([
-        ["Certified By", "Project"],
-        ["Shikha Varshney", "Smart Quiz Platform"]
-    ], colWidths=[220, 220])
+    table = Table(
+        [
+            ["Certified By", "Project"],
+            ["Shikha Varshney", "Smart Quiz Platform"]
+        ],
+        colWidths=[220, 220]
+    )
 
     table.setStyle(TableStyle([
-        ('GRID', (0,0), (-1,-1), 1, gold),
-        ('BACKGROUND', (0,0), (-1,0), darkblue),
-        ('TEXTCOLOR', (0,0), (-1,0), 'white'),
-        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-        ('FONTSIZE', (0,0), (-1,-1), 14),
-        ('BOTTOMPADDING', (0,0), (-1,0), 10),
+        ('GRID', (0, 0), (-1, -1), 1, gold),
+        ('BACKGROUND', (0, 0), (-1, 0), darkblue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), 'white'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTSIZE', (0, 0), (-1, -1), 14),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
     ]))
 
     content.append(table)
@@ -391,6 +377,7 @@ percentage = result[0] if result else 0
 
     return send_file(file_name, as_attachment=True)
 
+        
 
 @app.route("/subjects/<exam>")
 def subjects(exam):
