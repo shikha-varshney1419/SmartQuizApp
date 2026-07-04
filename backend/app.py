@@ -297,70 +297,21 @@ def analytics():
 
 
 # ---------------- CERTIFICATE ----------------
-@app.route("/submit_quiz/<int:subject_id>/<int:topic_id>", methods=["POST"])
-def submit_quiz(subject_id, topic_id):
+
+@app.route("/certificate")
+def certificate():
 
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    cursor = db.cursor()
-
-    cursor.execute("""
-        SELECT id, correct_option
-        FROM questions
-        WHERE subject_id=%s AND topic_id=%s
-    """, (subject_id, topic_id))
-
-    questions = cursor.fetchall()
-
-    score = 0
-
-    for q in questions:
-        qid = str(q[0])
-        correct = q[1]
-        user_ans = request.form.get(f"q{qid}")
-
-        if user_ans == correct:
-            score += 1
-
-    total = len(questions)
-    percentage = (score / total * 100) if total > 0 else 0
-
-    # Save values in session
-    session["score"] = score
-    session["percentage"] = round(percentage, 2)
-
-    if percentage >= 90:
-        session["grade"] = "A+"
-    elif percentage >= 75:
-        session["grade"] = "A"
-    elif percentage >= 60:
-        session["grade"] = "B"
-    elif percentage >= 50:
-        session["grade"] = "C"
-    else:
-        session["grade"] = "D"
-
-    session["certificate_date"] = datetime.now().strftime("%d %B %Y")
-    session["certificate_id"] = f"SQP-{random.randint(100000,999999)}"
-
-    cursor.execute("""
-        INSERT INTO quiz_attempts
-        (user_id, subject_id, topic_id, score, percentage)
-        VALUES(%s,%s,%s,%s,%s)
-    """, (
-        session["user_id"],
-        subject_id,
-        topic_id,
-        score,
-        percentage
-    ))
-
     return render_template(
-        "result.html",
-        score=score,
-        total=total,
-        percentage=round(percentage, 2)
+        "certificate.html",
+        name=session.get("user_name"),
+        score=session.get("score"),
+        percentage=session.get("percentage"),
+        grade=session.get("grade"),
+        certificate_id=session.get("certificate_id"),
+        certificate_date=session.get("certificate_date")
     )
 
 @app.route("/download_certificate")
