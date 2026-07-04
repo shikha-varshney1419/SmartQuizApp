@@ -2,44 +2,95 @@
 
 {% block content %}
 
-<div class="text-center mt-5">
-    <h2>🎓 Select Your Exam</h2>
-    <p class="text-muted">Choose an exam to continue</p>
-</div>
+<div class="container mt-5">
 
-<div class="row mt-5">
-
-    <div class="col-md-4 mb-4">
-        <div class="card shadow text-center p-4">
-            <h3>📘 UPSC</h3>
-            <p>Civil Services Preparation</p>
-
-            <a href="/subjects/UPSC" class="btn btn-primary">
-                Select
-            </a>
-        </div>
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">🎓 Smart Quiz Platform</h1>
+        <p class="text-muted fs-5">
+            Select your exam and start practicing.
+        </p>
     </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card shadow text-center p-4">
-            <h3>🏛 SSC</h3>
-            <p>Government Exam Practice</p>
+    <div class="row">
 
-            <a href="/subjects/SSC" class="btn btn-success">
-                Select
-            </a>
+        <!-- UPSC -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-0 h-100 text-center">
+
+                <div class="card-body">
+
+                    <h2>📘 UPSC</h2>
+
+                    <p class="text-muted">
+                        Civil Services Examination
+                    </p>
+
+                    <hr>
+
+                    <p><strong>📚 Subjects:</strong> 4</p>
+                    <p><strong>📝 Questions:</strong> 40</p>
+
+                    <a href="/subjects/UPSC" class="btn btn-primary w-100">
+                        Start Learning
+                    </a>
+
+                </div>
+
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card shadow text-center p-4">
-            <h3>⚛️ JEE</h3>
-            <p>Engineering Entrance</p>
+        <!-- SSC -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-0 h-100 text-center">
 
-            <a href="/subjects/JEE" class="btn btn-danger">
-                Select
-            </a>
+                <div class="card-body">
+
+                    <h2>🏛 SSC</h2>
+
+                    <p class="text-muted">
+                        Government Exam Preparation
+                    </p>
+
+                    <hr>
+
+                    <p><strong>📚 Subjects:</strong> 4</p>
+                    <p><strong>📝 Questions:</strong> 40</p>
+
+                    <a href="/subjects/SSC" class="btn btn-success w-100">
+                        Start Learning
+                    </a>
+
+                </div>
+
+            </div>
         </div>
+
+        <!-- JEE -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-0 h-100 text-center">
+
+                <div class="card-body">
+
+                    <h2>⚛️ JEE</h2>
+
+                    <p class="text-muted">
+                        Engineering Entrance Examination
+                    </p>
+
+                    <hr>
+
+                    <p><strong>📚 Subjects:</strong> 3</p>
+                    <p><strong>📝 Questions:</strong> 30</p>
+
+                    <a href="/subjects/JEE" class="btn btn-danger w-100">
+                        Start Learning
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
 </div>
