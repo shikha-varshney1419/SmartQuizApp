@@ -349,22 +349,23 @@ def download_certificate():
     )
 
     name = session.get("user_name", "Student")
+
     cursor = db.cursor()
 
-cursor.execute("""
-    SELECT percentage
-    FROM quiz_attempts
-    WHERE user_id = %s
-    ORDER BY id DESC
-    LIMIT 1
-""", (session["user_id"],))
+    cursor.execute("""
+        SELECT percentage
+        FROM quiz_attempts
+        WHERE user_id=%s
+        ORDER BY id DESC
+        LIMIT 1
+    """, (session["user_id"],))
 
-result = cursor.fetchone()
+    result = cursor.fetchone()
 
-if result:
-    percentage = result[0]
-else:
-    percentage = 0
+    if result:
+        percentage = result[0]
+    else:
+        percentage = 0
 
     content = []
 
@@ -413,7 +414,7 @@ else:
     table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, gold),
         ('BACKGROUND', (0, 0), (-1, 0), darkblue),
-        ('TEXTCOLOR', (0, 0), (-1, 0), 'white'),
+        ('TEXTCOLOR', (0, 0), (-1, 0), white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTSIZE', (0, 0), (-1, -1), 14),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
