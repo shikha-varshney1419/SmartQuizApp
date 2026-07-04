@@ -428,8 +428,8 @@ def subjects(exam):
         return "Invalid Exam"
 
     cursor.execute(
-        "SELECT * FROM subjects WHERE exam=%s",
-        (exam_name,)
+    "SELECT * FROM subjects WHERE exam_type=%s",
+    (exam_name,)
     )
 
     subjects = cursor.fetchall()
