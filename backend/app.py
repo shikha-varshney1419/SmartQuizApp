@@ -10,13 +10,20 @@ from reportlab.platypus import (
     Paragraph,
     Spacer,
     Table,
-    TableStyle
+    TableStyle,
+    Image
 )
+
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.colors import darkblue, gold, black, white
 from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import A4, landscape 
+from reportlab.pdfgen import canvas
+
+
+
 from datetime import datetime
 import random
 
@@ -314,6 +321,16 @@ def certificate():
         certificate_date=session.get("certificate_date")
     )
 
+def draw_certificate_border(canvas, doc):
+    width, height = landscape(A4)
+
+    canvas.setStrokeColor(gold)
+    canvas.setLineWidth(6)
+    canvas.rect(20, 20, width - 40, height - 40)
+
+    canvas.setLineWidth(2)
+    canvas.rect(30, 30, width - 60, height - 60)
+
 @app.route("/download_certificate")
 def download_certificate():
 
@@ -322,35 +339,50 @@ def download_certificate():
 
     file_name = "certificate.pdf"
 
-    doc = SimpleDocTemplate(file_name)
+    doc = SimpleDocTemplate(
+        file_name,
+        pagesize=landscape(A4),
+        leftMargin=40,
+        rightMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
 
     title_style = ParagraphStyle(
         "Title",
         fontSize=28,
         alignment=TA_CENTER,
         textColor=darkblue,
-        spaceAfter=20
+        spaceAfter=6,
+        leading=30
     )
 
     heading_style = ParagraphStyle(
         "Heading",
-        fontSize=20,
+        fontSize=18,
         alignment=TA_CENTER,
         textColor=gold,
-        spaceAfter=15
+        spaceAfter=12,
+        leading=22
     )
 
     normal_style = ParagraphStyle(
         "Normal",
-        fontSize=14,
+        fontSize=13,
         alignment=TA_CENTER,
         textColor=black,
-        leading=24
+        leading=18,
+        spaceAfter=4
     )
 
     name = session.get("user_name", "Student")
 
     cursor = db.cursor()
+
+    score = session.get("score", 0)
+    grade = session.get("grade", "N/A")
+    certificate_id = session.get("certificate_id", "SQP-000000")
+    certificate_date = session.get("certificate_date", "")
 
     cursor.execute("""
         SELECT percentage
@@ -367,64 +399,134 @@ def download_certificate():
     else:
         percentage = 0
 
-    content = []
-
-    content.append(Spacer(1, 0.4 * inch))
-    content.append(Paragraph("SMART QUIZ PLATFORM", title_style))
-    content.append(Paragraph("Certificate of Achievement", heading_style))
-
-    content.append(Spacer(1, 0.2 * inch))
-
-    content.append(Paragraph(
-        "This certificate is proudly presented to",
-        normal_style
-    ))
-
-    content.append(Spacer(1, 0.15 * inch))
-
-    content.append(Paragraph(
-        f"<b><font size='22'>{name}</font></b>",
-        normal_style
-    ))
-
-    content.append(Spacer(1, 0.2 * inch))
-
-    content.append(Paragraph(
-        "For successfully completing the quiz.",
-        normal_style
-    ))
-
-    content.append(Spacer(1, 0.2 * inch))
-
-    content.append(Paragraph(
-        f"<b>Final Score : {percentage}%</b>",
-        normal_style
-    ))
-
-    content.append(Spacer(1, 0.5 * inch))
-
-    table = Table(
-        [
-            ["Certified By", "Project"],
-            ["Shikha Varshney", "Smart Quiz Platform"]
-        ],
-        colWidths=[220, 220]
+    logo_path = os.path.join(
+        os.path.dirname(app.root_path),
+        "static",
+        "images",
+        "logo.png"
     )
 
-    table.setStyle(TableStyle([
-        ('GRID', (0, 0), (-1, -1), 1, gold),
-        ('BACKGROUND', (0, 0), (-1, 0), darkblue),
-        ('TEXTCOLOR', (0, 0), (-1, 0), white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTSIZE', (0, 0), (-1, -1), 14),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+    logo = Image(logo_path, width=110, height=110)
+    logo.hAlign = "CENTER"
+
+    content = []
+
+    content.append(logo)
+    content.append(Spacer(1, 0.08 * inch))
+
+    content.append(Paragraph(
+        "<b>SMART QUIZ PLATFORM</b>",
+        title_style
+    ))
+
+    content.append(Paragraph(
+        "<font size='20' color='gold'><b>CERTIFICATE OF ACHIEVEMENT</b></font>",
+        heading_style
+    ))
+
+    content.append(Spacer(1, 0.12 * inch))
+
+    content.append(Paragraph(
+        "This Certificate is proudly presented to",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.08 * inch))
+
+    content.append(Paragraph(
+        f"""
+        <font size="28" color="darkblue">
+        <b>{name}</b>
+        </font>
+        """,
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.10 * inch))
+
+    content.append(Paragraph(
+    """
+    For successfully completing the examination
+    with excellent performance and dedication
+    on the <b>Smart Quiz Platform</b>.
+    """,
+    normal_style
+    ))
+
+    content.append(Spacer(1, 0.18 * inch))
+
+    result_table = Table(
+    [
+        ["Final Score", "Percentage", "Grade"],
+        [str(score), f"{percentage}%", grade]
+    ],
+    colWidths=[170, 170, 170]
+    )
+
+    result_table.setStyle(TableStyle([
+    ('GRID', (0, 0), (-1, -1), 1.5, gold),
+    ('BACKGROUND', (0, 0), (-1, 0), darkblue),
+    ('TEXTCOLOR', (0, 0), (-1, 0), white),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, -1), 14),
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+    ('TOPPADDING', (1, 1), (-1, -1), 10),
     ]))
 
-    content.append(table)
+    content.append(result_table)
 
-    doc.build(content)
+    content.append(Spacer(1, 0.18 * inch))
 
-    return send_file(file_name, as_attachment=True)
+    content.append(Paragraph(
+        f"<b>Certificate ID:</b> {certificate_id}",
+        normal_style
+    ))
+
+    content.append(Paragraph(
+        f"<b>Date:</b> {certificate_date}",
+        normal_style
+    ))
+
+    content.append(Spacer(1, 0.25 * inch)) 
+
+    signature_table = Table(
+        [
+            ["__________________________", "__________________________"],
+            ["Instructor Signature", "Smart Quiz Platform"]
+        ],
+        colWidths=[250, 250]
+    )
+
+    signature_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 13),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+    ]))
+
+    content.append(signature_table)
+
+    content.append(Spacer(1, 0.12 * inch))
+
+    content.append(Paragraph(
+        """
+        <font size="18" color="green">
+        <b>✔ VERIFIED CERTIFICATE</b>
+        </font>
+        """,
+       normal_style
+    ))
+
+    doc.build(
+        content,
+        onFirstPage=draw_certificate_border
+    )
+
+    return send_file(file_name, as_attachment=True)   
+
 
 @app.route("/subjects/<exam>")
 def subjects(exam):
