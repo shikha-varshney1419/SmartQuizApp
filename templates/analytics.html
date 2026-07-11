@@ -2,41 +2,181 @@
 
 {% block content %}
 
-<h2 class="text-center mb-4">📊 Your Performance Analytics</h2>
+<div class="container mt-5">
 
-<div class="container">
+{% if admin %}
 
-    <div class="row text-center">
+<h2 class="text-primary mb-4">📊 Admin Analytics</h2>
 
-        <div class="col-md-3">
-            <div class="card shadow p-3 mb-3">
-                <h5>Total Quizzes</h5>
-                <h2>{{ total_quizzes }}</h2>
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Total Students</h6>
+                <h2 class="text-primary">{{ total_students }}</h2>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card shadow p-3 mb-3">
-                <h5>Average Score</h5>
-                <h2>{{ avg_score }}%</h2>
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Total Attempts</h6>
+                <h2 class="text-success">{{ total_attempts }}</h2>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card shadow p-3 mb-3">
-                <h5>Best Score</h5>
-                <h2>{{ best_score }}%</h2>
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Average Score</h6>
+                <h2 class="text-warning">{{ avg_score }}%</h2>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card shadow p-3 mb-3">
-                <h5>Subjects Attempted</h5>
-                <h2>{{ subjects }}</h2>
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Best Score</h6>
+                <h2 class="text-danger">{{ best_score }}%</h2>
             </div>
         </div>
+    </div>
+
+</div>
+
+<div class="card shadow">
+
+    <div class="card-header bg-dark text-white">
+        📚 Subject Wise Attempts
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover text-center">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Subject</th>
+                    <th>Total Attempts</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for s in subject_stats %}
+
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
 
     </div>
+
+</div>
+
+{% else %}
+
+<h2 class="text-primary mb-4">📈 My Analytics</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Total Quizzes</h6>
+                <h2 class="text-primary">{{ total_quizzes }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Average Score</h6>
+                <h2 class="text-success">{{ avg_score }}%</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Best Score</h6>
+                <h2 class="text-danger">{{ best_score }}%</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>Subjects Attempted</h6>
+                <h2 class="text-warning">{{ subjects }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Subject Wise Performance -->
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-dark text-white">
+        📚 Subject Wise Performance
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover text-center">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Subject</th>
+                    <th>Attempts</th>
+                    <th>Average %</th>
+                    <th>Best %</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for s in subject_stats %}
+
+            <tr>
+
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}%</td>
+                <td>{{ s[3] }}%</td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endif %}
 
 </div>
 

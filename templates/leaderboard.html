@@ -4,21 +4,33 @@
 
 <div class="container mt-5">
 
-    <h2 class="text-center text-primary fw-bold mb-4">
-        🏆 Top Performers
-    </h2>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">
+            🏆 Smart Quiz Leaderboard
+        </h2>
+        <p class="text-muted">
+            Top Performers of Smart Quiz Platform
+        </p>
+    </div>
 
     <div class="card shadow-lg border-0 rounded-4">
 
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">
+                Total Players : {{ leaders|length }}
+            </h4>
+        </div>
+
         <div class="card-body">
 
-            <table class="table table-hover text-center align-middle mb-0">
+            <table class="table table-hover text-center align-middle">
 
-                <thead class="table-primary">
+                <thead class="table-dark">
                     <tr>
-                        <th>🏅 Rank</th>
-                        <th>👤 Student</th>
-                        <th>📈 Best Score</th>
+                        <th>Rank</th>
+                        <th>Student</th>
+                        <th>Best Score</th>
+                        <th>Performance</th>
                     </tr>
                 </thead>
 
@@ -26,7 +38,17 @@
 
                 {% for i in range(leaders|length) %}
 
-                <tr>
+                <tr
+
+                {% if i==0 %}
+                    class="table-warning"
+                {% elif i==1 %}
+                    class="table-secondary"
+                {% elif i==2 %}
+                    class="table-danger"
+                {% endif %}
+
+                >
 
                     <td>
 
@@ -48,11 +70,28 @@
 
                     <td>
 
-                        <span class="badge bg-success fs-6 px-3 py-2">
+                        <span class="badge bg-success fs-6">
 
                             {{ leaders[i][1] }} %
 
                         </span>
+
+                    </td>
+
+                    <td style="width:35%;">
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar bg-success"
+                                role="progressbar"
+                                style="width: {{ leaders[i][1] }}%;">
+
+                                {{ leaders[i][1] }}%
+
+                            </div>
+
+                        </div>
 
                     </td>
 

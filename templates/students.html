@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-primary mb-4">👨‍🎓 Student Management</h2>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover text-center">
+
+                <thead class="table-dark">
+
+                <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Attempts</th>
+                <th>Best Score</th>
+                <th>Action</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for s in students %}
+
+                <tr>
+
+                <td>{{ s[0] }}</td>
+
+                <td>{{ s[1] }}</td>
+
+                <td>{{ s[2] }}</td>
+
+                <td>
+                <span class="badge bg-primary">
+                {{ s[3] }}
+                </span>
+                </td>
+
+                <td>{{ s[4] }}</td>
+
+                <td>
+                <span class="badge bg-info">
+                {{ s[5] }}
+                </span>
+                </td>
+
+                <td>
+                <span class="badge bg-success">
+                {{ "%.2f"|format(s[6]) }}%
+                </span>
+                </td>
+
+                <td>
+
+                <a href="/attempts?user_id={{ s[0] }}"
+                class="btn btn-sm btn-warning">
+
+                👁 View
+
+                </a>
+
+                </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        <a href="/admin" class="btn btn-primary">
+            ⬅ Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

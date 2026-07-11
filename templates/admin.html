@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2 class="text-primary mb-4">🛠 Admin Dashboard</h2>
+<div class="mb-3">
+
+    <a href="/students" class="btn btn-primary">
+        👨‍🎓 Manage Students
+    </a>
+
+</div>
+
+<!-- Statistics -->
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>👨‍🎓 Students</h6>
+                <h2 class="text-primary">{{ total_students }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>❓ Questions</h6>
+                <h2 class="text-success">{{ total_questions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>📝 Attempts</h6>
+                <h2 class="text-danger">{{ total_attempts }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h6>📚 Subjects</h6>
+                <h2 class="text-warning">{{ total_subjects }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Search -->
+
+<div class="card shadow mb-4">
+
+<div class="card-body">
+
+<form method="GET" action="/admin">
+
+<div class="row">
+
+<div class="col-md-5">
+
+<input
+type="text"
+class="form-control"
+name="search"
+placeholder="Search Question..."
+value="{{ search }}">
+
+</div>
+
+<div class="col-md-3">
+
+<select class="form-select" name="subject">
+
+<option value="">All Subjects</option>
+
+<option value="UPSC"
+{% if subject=="UPSC" %}selected{% endif %}>
+UPSC
+</option>
+
+<option value="JEE"
+{% if subject=="JEE" %}selected{% endif %}>
+JEE
+</option>
+
+<option value="SSC"
+{% if subject=="SSC" %}selected{% endif %}>
+SSC
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4">
+
+<button class="btn btn-primary">
+🔍 Search
+</button>
+
+<a href="/admin"
+class="btn btn-secondary">
+Reset
+</a>
+
+<a href="/add_question"
+class="btn btn-success">
+➕ Add Question
+</a>
+
+<a href="/download_report"
+class="btn btn-danger">
+📄 Download PDF Report
+</a>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- Questions -->
+
+<div class="card shadow mb-4">
+
+<div class="card-header bg-dark text-white">
+
+Question Bank
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-light">
+
+<tr>
+
+<th>ID</th>
+
+<th>Subject</th>
+
+<th>Topic</th>
+
+<th>Question</th>
+
+<th width="180">Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for q in questions %}
+
+<tr>
+
+<td>{{ q[0] }}</td>
+
+<td>{{ q[1] }}</td>
+
+<td>{{ q[2] }}</td>
+
+<td>{{ q[3] }}</td>
+
+<td>
+
+<a
+href="/edit_question/{{ q[0] }}"
+class="btn btn-warning btn-sm">
+
+✏ Edit
+
+</a>
+
+<a
+href="/delete_question/{{ q[0] }}"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Delete this question?')">
+
+🗑 Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Bottom Section -->
+
+<div class="row">
+
+<!-- Recent Students -->
+
+<div class="col-md-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+👨‍🎓 Recent Students
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-sm">
+
+{% for s in recent_students %}
+
+<tr>
+
+<td>
+
+<b>{{ s[0] }}</b><br>
+
+<small>{{ s[1] }}</small>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Recent Attempts -->
+
+<div class="col-md-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-success text-white">
+
+📝 Recent Attempts
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-sm">
+
+{% for a in recent_attempts %}
+
+<tr>
+
+<td>
+
+<b>{{ a[0] }}</b><br>
+
+{{ a[1] }}
+
+</td>
+
+<td>
+
+{{ a[2] }}%
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Top Performers -->
+
+<div class="col-md-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-warning">
+
+🏆 Top Performers
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-sm">
+
+{% for t in top_students %}
+
+<tr>
+
+<td>
+
+🥇 {{ t[0] }}
+
+</td>
+
+<td>
+
+<b>{{ t[1] }}%</b>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

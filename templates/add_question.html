@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg">
+
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">➕ Add New Question</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+
+                    <select id="subject" name="subject_id" class="form-select" required>
+
+                        <option value="">Select Subject</option>
+
+                        {% for s in subjects %}
+                        <option value="{{ s[0] }}">
+                            {{ s[1] }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Topic</label>
+
+                    <select id="topic" name="topic_id" class="form-select" required>
+
+                        <option value="">Select Topic</option>
+
+                        {% for t in topics %}
+                        <option
+                            value="{{ t[0] }}"
+                            data-subject="{{ t[1] }}">
+                            {{ t[2] }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Question</label>
+
+                    <textarea
+                        name="question"
+                        class="form-control"
+                        rows="3"
+                        required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Option 1</label>
+                    <input type="text" name="option1" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Option 2</label>
+                    <input type="text" name="option2" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Option 3</label>
+                    <input type="text" name="option3" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Option 4</label>
+                    <input type="text" name="option4" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Correct Option</label>
+
+                    <select name="correct_option" class="form-select" required>
+                        <option value="">Select Correct Answer</option>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                        <option value="option4">Option 4</option>
+                    </select>
+
+                </div>
+
+                <button class="btn btn-success btn-lg">
+                    ✅ Add Question
+                </button>
+
+                <a href="/admin" class="btn btn-secondary btn-lg">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const subject = document.getElementById("subject");
+const topic = document.getElementById("topic");
+
+subject.addEventListener("change", function () {
+
+    const selectedSubject = this.value;
+
+    for (let option of topic.options) {
+
+        if (option.value === "") {
+            option.hidden = false;
+            continue;
+        }
+
+        if (option.dataset.subject === selectedSubject) {
+            option.hidden = false;
+        } else {
+            option.hidden = true;
+        }
+    }
+
+    topic.value = "";
+
+});
+
+</script>
+
+{% endblock %}

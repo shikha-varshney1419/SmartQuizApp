@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-center text-primary mb-4">
+        📜 My Quiz History
+    </h2>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            {% if attempts %}
+
+            <table class="table table-hover table-bordered text-center align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>#</th>
+                        <th>Exam</th>
+                        <th>Topic</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Date</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for a in attempts %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ a[0] }}</td>
+
+                    <td>{{ a[1] }}</td>
+
+                    <td>{{ a[2] }}</td>
+
+                    <td>
+                        <span class="badge bg-success">
+                            {{ a[3] }}%
+                        </span>
+                    </td>
+
+                    <td>{{ a[4] }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="alert alert-info text-center">
+
+                You have not attempted any quiz yet.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

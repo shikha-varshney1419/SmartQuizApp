@@ -2,73 +2,164 @@
 
 {% block content %}
 
-<h2 class="text-center mb-4">📝 Quiz</h2>
+<div class="container mt-4">
 
-<form action="/submit_quiz/{{ subject_id }}/{{ topic_id }}" method="POST">
+    <h2 class="text-center mb-3">
+        📝 {{ topic_name }}
+    </h2>
 
-{% for q in questions %}
-
-<div class="card shadow mb-4">
-
-    <div class="card-body">
-
-        <h5 class="mb-3">
-            Q{{ loop.index }}. {{ q[3] }}
-        </h5>
-
-        <div>
-            <input type="radio" name="q{{ q[0] }}" value="{{ q[4] }}" required>
-            {{ q[4] }}
-        </div>
-
-        <div>
-            <input type="radio" name="q{{ q[0] }}" value="{{ q[5] }}">
-            {{ q[5] }}
-        </div>
-
-        <div>
-            <input type="radio" name="q{{ q[0] }}" value="{{ q[6] }}">
-            {{ q[6] }}
-        </div>
-
-        <div>
-            <input type="radio" name="q{{ q[0] }}" value="{{ q[7] }}">
-            {{ q[7] }}
-        </div>
-
+    <!-- Timer -->
+    <div class="text-center mb-4">
+        <h3 class="text-danger">
+            ⏳ Time Left:
+            <span id="timer">10:00</span>
+        </h3>
     </div>
 
+    <form action="/submit_quiz/{{ subject_id }}/{{ topic_id }}" method="POST">
+
+        <!-- Question Palette -->
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+
+                <h5 class="mb-3">Question Palette</h5>
+
+                {% for q in questions %}
+                <button
+                    type="button"
+                    id="nav{{ loop.index }}"
+                    class="btn btn-outline-secondary m-1"
+                    onclick="document.getElementById('question{{ loop.index }}').scrollIntoView({behavior:'smooth'});">
+
+                    {{ loop.index }}
+
+                </button>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- Questions -->
+        {% for q in questions %}
+
+        <div class="card shadow mb-4" id="question{{ loop.index }}">
+            <div class="card-body">
+
+                <h5 class="mb-3">
+                    Q{{ loop.index }}. {{ q[3] }}
+                </h5>
+
+                <div class="form-check mb-2">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="q{{ q[0] }}"
+                        value="{{ q[4] }}"
+                        required
+                        onclick="markAnswered({{ loop.index }})">
+
+                    <label class="form-check-label">
+                        {{ q[4] }}
+                    </label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="q{{ q[0] }}"
+                        value="{{ q[5] }}"
+                        onclick="markAnswered({{ loop.index }})">
+
+                    <label class="form-check-label">
+                        {{ q[5] }}
+                    </label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="q{{ q[0] }}"
+                        value="{{ q[6] }}"
+                        onclick="markAnswered({{ loop.index }})">
+
+                    <label class="form-check-label">
+                        {{ q[6] }}
+                    </label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="q{{ q[0] }}"
+                        value="{{ q[7] }}"
+                        onclick="markAnswered({{ loop.index }})">
+
+                    <label class="form-check-label">
+                        {{ q[7] }}
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+        <div class="text-center mb-5">
+            <button type="submit" class="btn btn-success btn-lg">
+                ✅ Submit Quiz
+            </button>
+        </div>
+
+    </form>
+
 </div>
-
-{% endfor %}
-
-<div class="text-center">
-    <button type="submit" class="btn btn-success btn-lg">
-        Submit Quiz
-    </button>
-</div>
-
-<h4 class="text-center text-danger">
-    ⏱ Time Left: <span id="timer">60</span> seconds
-</h4>
-
-</form> 
 
 <script>
-let timeLeft = 60;
 
-const timer = setInterval(() => {
+let totalSeconds = 60;
 
-    timeLeft--;
-    document.getElementById("timer").innerText = timeLeft;
+const timerDisplay = document.getElementById("timer");
 
-    if (timeLeft <= 0) {
-        clearInterval(timer);
-        alert("Time is up! Auto submitting quiz.");
-        document.querySelector("form").submit();
+const countdown = setInterval(function () {
+
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+
+    timerDisplay.innerHTML =
+        minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    if (totalSeconds <= 60) {
+        timerDisplay.style.color = "red";
+        timerDisplay.style.fontWeight = "bold";
     }
 
+    if (totalSeconds <= 0) {
+
+        clearInterval(countdown);
+
+        alert("⏰ Time is over! Quiz will be submitted automatically.");
+
+        document.querySelector("form").submit();
+
+    }
+
+    totalSeconds--;
+
 }, 1000);
+
+function markAnswered(questionNo) {
+
+    let btn = document.getElementById("nav" + questionNo);
+
+    btn.classList.remove("btn-outline-secondary");
+
+    btn.classList.add("btn-success");
+
+}
+
 </script>
 
 {% endblock %}

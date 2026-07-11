@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="text-primary">📊 All Quiz Attempts</h2>
+
+        <div>
+            <a href="/admin" class="btn btn-secondary">
+                ⬅ Back to Admin
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Total Attempts</h6>
+                    <h2 class="text-primary">{{ stats[0] }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Average Percentage</h6>
+                    <h2 class="text-success">
+                        {{ "%.2f"|format(stats[1] or 0) }}%
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Highest Percentage</h6>
+                    <h2 class="text-danger">
+                        {{ "%.2f"|format(stats[2] or 0) }}%
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <form method="GET" action="/attempts">
+
+                <div class="row">
+
+                    <div class="col-md-10">
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="search"
+                            placeholder="Search Student Name..."
+                            value="{{ search }}">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <button class="btn btn-primary w-100">
+                            🔍 Search
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Attempts Table -->
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover text-center">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Topic</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Attempt Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for a in attempts %}
+
+                    <tr>
+
+                        <td>{{ a[0] }}</td>
+                        <td>{{ a[1] }}</td>
+                        <td>{{ a[2] }}</td>
+                        <td>{{ a[3] }}</td>
+                        <td>{{ a[4] }}%</td>
+                        <td>{{ a[5] }}</td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
