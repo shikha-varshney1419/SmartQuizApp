@@ -4,51 +4,60 @@
 
 <div class="container text-center mt-5">
 
-    <div class="card shadow p-4 mx-auto" style="max-width: 500px;">
+    <div class="card shadow-lg p-4 mx-auto" style="max-width:600px;">
 
         <h2 class="mb-3">🎯 Quiz Result</h2>
 
-        <!-- SCORE -->
         <h1 class="display-4 text-primary">
             {{ score }}/{{ total }}
         </h1>
 
-        <!-- PERCENTAGE -->
-        <h3 class="mt-2">
+        <h3 class="mt-2 text-success">
             {{ percentage }}%
         </h3>
 
-        <!-- PROGRESS BAR -->
-        <div class="progress mt-3 mb-3">
+        <div class="progress mt-3 mb-4" style="height:25px;">
+
             <div class="progress-bar bg-success"
-                 role="progressbar"
-                 style="width: {{ percentage }}%;">
+                 style="width:{{ percentage }}%;">
+
+                {{ percentage }}%
+
             </div>
+
         </div>
 
-        <!-- PASS / FAIL -->
-        {% if percentage >= 50 %}
-            <h4 class="text-success">🎉 Congratulations! You Passed</h4>
+        {% if percentage >= 80 %}
+
+            <div class="alert alert-success">
+                🏆 Excellent Performance
+            </div>
+
+        {% elif percentage >= 60 %}
+
+            <div class="alert alert-info">
+                👍 Good Job
+            </div>
+
         {% else %}
-            <h4 class="text-danger">❌ Try Again</h4>
+
+            <div class="alert alert-warning">
+                📚 Keep Practicing
+            </div>
+
         {% endif %}
 
-        <p class="text-muted mt-2">
-            Keep practicing to improve your score 🚀
-        </p>
+        <div class="d-grid gap-2 mt-4">
 
-        <!-- BUTTONS -->
-        <div class="mt-4">
-
-            <a href="/certificate" class="btn btn-success m-2">
-                🎓 View Certificate
+            <a href="/scoreboard" class="btn btn-success btn-lg">
+                📊 View Score Board
             </a>
 
-            <a href="/download_certificate" class="btn btn-dark m-2">
-                📄 Download PDF
+            <a href="/download_score_report" class="btn btn-dark btn-lg">
+                📄 Download Score Report PDF
             </a>
 
-            <a href="/dashboard" class="btn btn-primary m-2">
+            <a href="/dashboard" class="btn btn-primary btn-lg">
                 🏠 Back to Dashboard
             </a>
 

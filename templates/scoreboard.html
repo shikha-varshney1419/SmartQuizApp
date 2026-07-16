@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-success text-white text-center">
+
+            <h2>📊 Quiz Score Board</h2>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>👤 Student</th>
+                            <td>{{ session.get("user_name") }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>📚 Subject</th>
+                            <td>{{ data[0] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>📖 Topic</th>
+                            <td>{{ data[1] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>🎯 Score</th>
+                            <td>{{ data[2] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>📈 Percentage</th>
+                            <td>{{ data[3] }}%</td>
+                        </tr>
+
+                        <tr>
+                            <th>📅 Attempt Date</th>
+                            <td>{{ data[4] }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="card bg-light">
+
+                        <div class="card-body text-center">
+
+                            <h3 class="text-primary">
+
+                                {% if data[3] >= 80 %}
+                                    🏆 Excellent
+                                {% elif data[3] >= 60 %}
+                                    👍 Good
+                                {% else %}
+                                    📚 Keep Practicing
+                                {% endif %}
+
+                            </h3>
+
+                            <hr>
+
+                            <h4>
+                                Final Score
+                            </h4>
+
+                            <h1 class="display-4 text-success">
+
+                                {{ data[3] }}%
+
+                            </h1>
+
+                            <a href="/download_score_report"
+                               class="btn btn-primary mt-3">
+
+                                📥 Download Score Report
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="text-center mt-4">
+
+                <a href="/dashboard" class="btn btn-secondary">
+
+                    🏠 Back to Dashboard
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
