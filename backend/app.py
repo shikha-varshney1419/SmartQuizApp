@@ -86,8 +86,17 @@ def register():
 
     cursor = get_db().cursor()
     cursor.execute(
-        "INSERT INTO users(name,email,password) VALUES(%s,%s,%s)",
-        (data["name"], data["email"], data["password"])
+        """
+        INSERT INTO users
+        (name,email,password,phone)
+        VALUES(%s,%s,%s,%s)
+        """,
+        (
+            data["name"],
+            data["email"],
+            data["password"],
+            data["phone"]
+        )
     )
 
     return jsonify({"message": "Registration Successful"})
@@ -241,7 +250,13 @@ def submit_quiz(subject_id, topic_id):
     cursor = get_db().cursor()
 
     cursor.execute("""
-        SELECT id, correct_option
+        SELECT
+            id,
+            option1,
+            option2,
+            option3,
+            option4,
+            correct_option
         FROM questions
         WHERE subject_id=%s AND topic_id=%s
     """, (subject_id, topic_id))
@@ -255,7 +270,13 @@ def submit_quiz(subject_id, topic_id):
     for index, q in enumerate(questions, start=1):
 
         qid = str(q[0])
-        correct = q[1]
+
+        option1 = q[1]
+        option2 = q[2]
+        option3 = q[3]
+        option4 = q[4]
+
+        correct = q[5]
         user_ans = request.form.get(f"q{qid}")
 
         if user_ans == correct:
@@ -264,30 +285,25 @@ def submit_quiz(subject_id, topic_id):
         else:
             mark = "✘"
 
-        letter = ""
+        def get_option_letter(answer):
+            if answer == option1:
+                return "A"
+            elif answer == option2:
+                return "B"
+            elif answer == option3:
+                return "C"
+            elif answer == option4:
+                return "D"
+            return "-"
 
-        cursor.execute("""
-        SELECT option1, option2, option3, option4
-        FROM questions
-        WHERE id=%s
-        """, (qid,))
-
-        opts = cursor.fetchone()
-
-        if opts:
-            if correct == opts[0]:
-                letter = "A"
-            elif correct == opts[1]:
-                letter = "B"
-            elif correct == opts[2]:
-                letter = "C"
-            elif correct == opts[3]:
-                letter = "D"
+        your_letter = get_option_letter(user_ans)
+        correct_letter = get_option_letter(correct)
 
         answer_summary.append({
             "qno": index,
-            "mark": mark,
-            "correct": letter
+            "your_answer": f"{your_letter}. {user_ans}" if user_ans else "-",
+            "correct_answer": f"{correct_letter}. {correct}",
+            "result": mark
         })
 
         attempt_answers.append({
@@ -524,8 +540,10 @@ def scoreboard():
 
     return render_template(
         "scoreboard.html",
-        data=data
+        data=data,
+        answer_summary=session.get("answer_summary", [])
     )
+
 @app.route("/history")
 def history():
 
@@ -569,6 +587,7 @@ def profile():
         SELECT
             name,
             email,
+            phone,       
             role,
             created_at
         FROM users

@@ -26,7 +26,7 @@
     </h3>
 
     <span class="badge bg-primary">
-        {{ user[2] }}
+        {{ user[3]|title }}
     </span>
 
 </div>
@@ -42,7 +42,7 @@ width="180">
 
 <h4>{{ user[0] }}</h4>
 
-<p class="text-muted">{{ user[2]|title }}</p>
+<p class="text-muted">{{ user[3]|title }}</p>
 
 </div>
 
@@ -63,13 +63,18 @@ width="180">
 </tr>
 
 <tr>
+<th>Contact No.</th>
+<td>{{ user[2] }}</td>
+</tr>
+
+<tr>
 <th>Role</th>
-<td>{{ user[2]|title }}</td>
+<td>{{ user[3]|title }}</td>
 </tr>
 
 <tr>
 <th>Joined On</th>
-<td>{{ user[3] }}</td>
+<td>{{ user[4] }}</td>
 </tr>
 
 </table>

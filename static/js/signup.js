@@ -7,6 +7,7 @@ form.addEventListener("submit", async (e) => {
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const phone = document.getElementById("phone").value;
 
     const response = await fetch("/register", {
         method: "POST",
@@ -16,7 +17,8 @@ form.addEventListener("submit", async (e) => {
         body: JSON.stringify({
             name,
             email,
-            password
+            password,
+            phone
         })
     });
 

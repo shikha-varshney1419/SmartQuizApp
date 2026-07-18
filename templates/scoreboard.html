@@ -99,6 +99,58 @@
 
             </div>
 
+            <hr class="my-4">
+
+            <h3 class="text-center mb-4">
+                📝 Answer Review
+            </h3>
+
+            {% for item in answer_summary %}
+
+            <div class="card mb-3 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+                        Question {{ item.qno }}
+                    </h5>
+
+                    <p>
+                        <strong>Your Answer :</strong>
+                        {{ item.your_answer }}
+                    </p>
+
+                    <p>
+                        <strong>Correct Answer :</strong>
+                        {{ item.correct_answer }}
+                    </p>
+
+                    <p>
+
+                        <strong>Result :</strong>
+
+                        {% if item.result == "✔" %}
+
+                            <span class="text-success">
+                                ✅ Correct
+                            </span>
+
+                        {% else %}
+
+                            <span class="text-danger">
+                                ❌ Wrong
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+            
             <div class="text-center mt-4">
 
                 <a href="/dashboard" class="btn btn-secondary">
