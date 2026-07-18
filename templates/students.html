@@ -19,6 +19,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Contact No.</th>
                 <th>Role</th>
                 <th>Joined</th>
                 <th>Attempts</th>
@@ -41,23 +42,25 @@
 
                 <td>{{ s[2] }}</td>
 
+                <td>{{ s[3] }}</td>
+
                 <td>
                 <span class="badge bg-primary">
-                {{ s[3] }}
+                {{ s[4] }}
                 </span>
                 </td>
 
-                <td>{{ s[4] }}</td>
+                <td>{{ s[5] }}</td>
 
                 <td>
                 <span class="badge bg-info">
-                {{ s[5] }}
+                {{ s[6] }}
                 </span>
                 </td>
 
                 <td>
                 <span class="badge bg-success">
-                {{ "%.2f"|format(s[6]) }}%
+                {{ "%.2f"|format(s[7]) }}%
                 </span>
                 </td>
 

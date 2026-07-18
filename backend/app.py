@@ -1154,6 +1154,7 @@ def students():
         users.id,
         users.name,
         users.email,
+        users.phone,
         users.role,
         users.created_at,
         COUNT(quiz_attempts.id) AS attempts,
@@ -1165,6 +1166,7 @@ def students():
         users.id,
         users.name,
         users.email,
+        users.phone,
         users.role,
         users.created_at
     ORDER BY users.id DESC
@@ -1176,6 +1178,7 @@ def students():
         "students.html",
         students=students
     )
+
 @app.route("/attempts")
 def attempts():
 
