@@ -68,12 +68,15 @@
 
                         <img
                             src="{{ leaders[i][2] if leaders[i][2] and leaders[i][2].startswith('http') else url_for('static', filename='uploads/default.jpg') }}"
+                            onerror="this.onerror=null; this.src='{{ url_for('static', filename='uploads/default.jpg') }}';"
                             width="45"
                             height="45"
                             class="rounded-circle me-2"
                             style="object-fit:cover;">
 
                         {{ leaders[i][0] }}
+                        <br>
+                        <small style="color:red;">{{ leaders[i][2] }}</small>
 
                     </td>
 
