@@ -211,6 +211,38 @@ onclick="return confirm('Delete this question?')">
 
 </div>
 
+<div class="card shadow mb-4">
+
+    <div class="card-header bg-info text-white">
+
+        📊 Subject Wise Quiz Attempts
+
+    </div>
+
+    <div class="card-body">
+
+        <canvas id="subjectChart" height="100"></canvas>
+
+        <hr>
+
+        <h5 class="text-center mt-4 mb-3">
+        🥧 Subject Wise Distribution
+        </h5>
+
+        <div class="d-flex justify-content-center">
+
+            <div style="width:250px; height:250px;">
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- Bottom Section -->
 
 <div class="row">
@@ -301,52 +333,157 @@ onclick="return confirm('Delete this question?')">
 
 </div>
 
-<!-- Top Performers -->
+<!-- Top 10 Students -->
 
 <div class="col-md-4">
 
-<div class="card shadow">
+    <div class="card shadow">
 
-<div class="card-header bg-warning">
+        <div class="card-header bg-warning text-dark">
 
-🏆 Top Performers
+            🏆 Top 10 Students
+
+        </div>
+
+        <div class="card-body p-2">
+
+            <table class="table table-sm align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Score</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for t in top_students %}
+
+                    <tr>
+
+                        <td>
+
+                            {% if loop.index == 1 %}
+                                🥇
+                            {% elif loop.index == 2 %}
+                                🥈
+                            {% elif loop.index == 3 %}
+                                🥉
+                            {% else %}
+                                {{ loop.index }}
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + (t[1] if t[1] else 'default.jpg')) }}"
+                                width="40"
+                                height="40"
+                                class="rounded-circle"
+                                style="object-fit:cover;">
+
+                        </td>
+
+                        <td>{{ t[0] }}</td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                {{ "%.2f"|format(t[2]) }}%
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="card-body">
-
-<table class="table table-sm">
-
-{% for t in top_students %}
-
-<tr>
-
-<td>
-
-🥇 {{ t[0] }}
-
-</td>
-
-<td>
-
-<b>{{ t[1] }}%</b>
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
-
 </div>
 
 </div>
 
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-</div>
+<script>
 
-</div>
+const subjectData = {{ subject_attempts|tojson }};
+
+const labels = subjectData.map(item => item[0]);
+const values = subjectData.map(item => item[1]);
+
+// ---------------- BAR CHART ----------------
+
+const ctx = document.getElementById("subjectChart");
+
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Quiz Attempts",
+            data: values,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// ---------------- PIE CHART ----------------
+
+const pieCtx = document.getElementById("pieChart");
+
+new Chart(pieCtx, {
+    type: "pie",
+    data: {
+        labels: labels,
+        datasets: [{
+            data: values
+        }]
+    },
+    options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: "bottom"
+            }
+        }
+    }
+});
+
+</script>
 
 {% endblock %}

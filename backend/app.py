@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from dotenv import load_dotenv
 import pymysql
 import os
+from werkzeug.utils import secure_filename
 
 load_dotenv()
 
@@ -82,25 +83,43 @@ def signup():
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
 
+    name = request.form["name"]
+    email = request.form["email"]
+    password = request.form["password"]
+    phone = request.form["phone"]
+
+    file = request.files.get("profile_pic")
+
+    filename = "default.jpg"
+
+    if file and file.filename != "":
+        filename = secure_filename(file.filename)
+        upload_folder = os.path.join(app.root_path, "..", "static", "uploads")
+        upload_folder = os.path.abspath(upload_folder)
+
+        os.makedirs(upload_folder, exist_ok=True)
+
+        file.save(os.path.join(upload_folder, filename))
     cursor = get_db().cursor()
-    cursor.execute(
-        """
+
+    cursor.execute("""
         INSERT INTO users
-        (name,email,password,phone)
-        VALUES(%s,%s,%s,%s)
-        """,
-        (
-            data["name"],
-            data["email"],
-            data["password"],
-            data["phone"]
-        )
-    )
+        (name,email,password,phone,profile_pic)
+        VALUES(%s,%s,%s,%s,%s)
+    """, (
+        name,
+        email,
+        password,
+        phone,
+        filename
+    ))
 
-    return jsonify({"message": "Registration Successful"})
+    get_db().commit()
 
+    return jsonify({
+        "message":"Registration Successful"
+    })
 
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["GET", "POST"])
@@ -126,6 +145,9 @@ def login():
             session["user_id"] = user[0]
             session["user_name"] = user[1]
             session["role"] = user[4]
+
+            # Profile photo session me save hogi
+            session["profile_pic"] = user[7]
 
             flash(f"Welcome, {user[1]}!", "success")
 
@@ -587,9 +609,10 @@ def profile():
         SELECT
             name,
             email,
-            phone,       
+            phone,
             role,
-            created_at
+            created_at,
+            profile_pic
         FROM users
         WHERE id=%s
     """, (session["user_id"],))
@@ -613,6 +636,114 @@ def profile():
         user=user,
         stats=stats
     )
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+def edit_profile():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = get_db().cursor()
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        phone = request.form["phone"]
+        password = request.form["password"]
+
+        file = request.files.get("profile_pic")
+
+        if file and file.filename != "":
+
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join(app.root_path, "..", "static", "uploads")
+            upload_folder = os.path.abspath(upload_folder)
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            file.save(os.path.join(upload_folder, filename))
+
+            cursor.execute(
+                "UPDATE users SET profile_pic=%s WHERE id=%s",
+                (filename, session["user_id"])
+            )
+
+        if password.strip() == "":
+
+            cursor.execute("""
+                UPDATE users
+                SET name=%s,
+                    phone=%s
+                WHERE id=%s
+            """, (
+                name,
+                phone,
+                session["user_id"]
+            ))
+
+        else:
+
+            cursor.execute("""
+                UPDATE users
+                SET name=%s,
+                    phone=%s,
+                    password=%s
+                WHERE id=%s
+            """, (
+                name,
+                phone,
+                password,
+                session["user_id"]
+            ))
+
+        get_db().commit()
+
+        session["user_name"] = name
+
+        flash("Profile Updated Successfully!", "success")
+
+        return redirect(url_for("profile"))
+
+    cursor.execute("""
+        SELECT
+            name,
+            email,
+            phone,
+            profile_pic
+        FROM users
+        WHERE id=%s
+    """, (session["user_id"],))
+
+    user = cursor.fetchone()
+
+    return render_template(
+        "edit_profile.html",
+        user=user
+    )
+
+@app.route("/remove_profile_photo")
+def remove_profile_photo():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = get_db().cursor()
+
+    cursor.execute("""
+        UPDATE users
+        SET profile_pic=%s
+        WHERE id=%s
+    """, (
+        "default.jpg",
+        session["user_id"]
+    ))
+
+    get_db().commit()
+
+    flash("Profile Photo Removed Successfully!", "success")
+
+    return redirect(url_for("edit_profile"))
 
 @app.route("/download_score_report")
 def download_score_report():
@@ -877,7 +1008,7 @@ def admin():
     cursor.execute("SELECT COUNT(*) FROM subjects")
     total_subjects = cursor.fetchone()[0]
     
-# ---------------- Recent Students ----------------
+    # ---------------- Recent Students ----------------
 
     cursor.execute("""
         SELECT
@@ -893,7 +1024,7 @@ def admin():
     recent_students = cursor.fetchall()
 
 
-# ---------------- Recent Quiz Attempts ----------------
+    # ---------------- Recent Quiz Attempts ----------------
 
     cursor.execute("""
         SELECT
@@ -913,21 +1044,55 @@ def admin():
     recent_attempts = cursor.fetchall()
 
 
-# ---------------- Top Performers ----------------
+    # ---------------- Top 10 Students ----------------
 
     cursor.execute("""
         SELECT
             users.name,
-            MAX(quiz_attempts.percentage)
+            users.profile_pic,
+            MAX(quiz_attempts.percentage) AS best_score
         FROM quiz_attempts
         JOIN users
             ON quiz_attempts.user_id = users.id
-        GROUP BY users.id
-        ORDER BY MAX(quiz_attempts.percentage) DESC
-        LIMIT 5
+        GROUP BY
+            users.id,
+            users.name,
+            users.profile_pic
+        ORDER BY best_score DESC
+        LIMIT 10
     """)
 
     top_students = cursor.fetchall()
+
+    # ---------------- Most Active Students ----------------
+
+    cursor.execute("""
+        SELECT
+            users.name,
+            COUNT(quiz_attempts.id) AS total_attempts
+        FROM users
+        JOIN quiz_attempts
+            ON users.id = quiz_attempts.user_id
+        GROUP BY users.id
+        ORDER BY total_attempts DESC
+        LIMIT 5
+    """)
+
+    most_active_students = cursor.fetchall()
+    # ---------------- Subject Wise Attempts ----------------
+
+    cursor.execute("""
+        SELECT
+            subjects.name,
+            COUNT(quiz_attempts.id)
+        FROM subjects
+        LEFT JOIN quiz_attempts
+            ON subjects.id = quiz_attempts.subject_id
+        GROUP BY subjects.id
+        ORDER BY subjects.id
+    """)
+
+    subject_attempts = cursor.fetchall()
     # ---------------- Questions ----------------
 
     query = """
@@ -969,7 +1134,9 @@ def admin():
         total_subjects=total_subjects,
         recent_students=recent_students,
         recent_attempts=recent_attempts,
-        top_students=top_students
+        top_students=top_students,
+        most_active_students=most_active_students,
+        subject_attempts=subject_attempts
     )
 
 # ---------------- ADD QUESTION ----------------
@@ -1139,6 +1306,8 @@ def students():
 
     cursor = get_db().cursor()
 
+    search = request.args.get("search", "").strip()
+
     cursor.execute(
         "SELECT role FROM users WHERE id=%s",
         (session["user_id"],)
@@ -1158,25 +1327,264 @@ def students():
         users.role,
         users.created_at,
         COUNT(quiz_attempts.id) AS attempts,
-        IFNULL(MAX(quiz_attempts.percentage),0) AS best_score
+        IFNULL(MAX(quiz_attempts.percentage),0) AS best_score,
+        users.profile_pic
     FROM users
     LEFT JOIN quiz_attempts
     ON users.id = quiz_attempts.user_id
+    WHERE
+        users.name LIKE %s
+        OR users.email LIKE %s
+        OR users.phone LIKE %s
     GROUP BY
         users.id,
         users.name,
         users.email,
         users.phone,
         users.role,
-        users.created_at
+        users.created_at,
+        users.profile_pic
     ORDER BY users.id DESC
-    """)
+    """, (
+        f"%{search}%",
+        f"%{search}%",
+        f"%{search}%"
+    ))
 
     students = cursor.fetchall()
 
     return render_template(
         "students.html",
         students=students
+    )
+
+@app.route("/admin_edit_student/<int:user_id>", methods=["GET", "POST"])
+def admin_edit_student(user_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = get_db().cursor()
+
+    # Check Admin
+    cursor.execute(
+        "SELECT role FROM users WHERE id=%s",
+        (session["user_id"],)
+    )
+
+    admin = cursor.fetchone()
+
+    if not admin or admin[0] != "admin":
+        return "Access Denied"
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        phone = request.form["phone"]
+        role = request.form["role"]
+
+        file = request.files.get("profile_pic")
+
+        cursor.execute(
+            "SELECT profile_pic FROM users WHERE id=%s",
+            (user_id,)
+        )
+
+        old = cursor.fetchone()
+
+        filename = old[0] if old and old[0] else "default.jpg"
+
+        if file and file.filename != "":
+
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join(app.root_path, "..", "static", "uploads")
+            upload_folder = os.path.abspath(upload_folder)
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            file.save(os.path.join(upload_folder, filename))
+
+        cursor.execute("""
+            UPDATE users
+            SET
+                name=%s,
+                phone=%s,
+                role=%s,
+                profile_pic=%s
+            WHERE id=%s
+        """,(
+                name,
+                phone,
+                role,
+                filename,
+                user_id
+            ))
+
+        get_db().commit()
+
+        flash("Student Updated Successfully!", "success")
+
+        return redirect(url_for("students"))
+
+    cursor.execute("""
+        SELECT
+            id,
+            name,
+            email,
+            phone,
+            role,
+            profile_pic
+        FROM users
+        WHERE id=%s
+    """, (user_id,))
+
+    student = cursor.fetchone()
+
+    return render_template(
+        "admin_edit_student.html",
+        student=student
+    )
+
+@app.route("/delete_student/<int:user_id>")
+def delete_student(user_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = get_db().cursor()
+
+    # Check admin
+    cursor.execute(
+        "SELECT role FROM users WHERE id=%s",
+        (session["user_id"],)
+    )
+
+    admin = cursor.fetchone()
+
+    if not admin or admin[0] != "admin":
+        return "Access Denied"
+
+    # Admin apna account delete na kar sake
+    if user_id == session["user_id"]:
+        flash("You cannot delete your own account.", "danger")
+        return redirect(url_for("students"))
+
+    # Student delete
+    cursor.execute(
+        "DELETE FROM users WHERE id=%s",
+        (user_id,)
+    )
+
+    get_db().commit()
+
+    flash("Student Deleted Successfully!", "success")
+
+    return redirect(url_for("students"))
+
+@app.route("/student_profile/<int:user_id>")
+def student_profile(user_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cursor = get_db().cursor()
+
+    # Admin Check
+    cursor.execute(
+        "SELECT role FROM users WHERE id=%s",
+        (session["user_id"],)
+    )
+
+    admin = cursor.fetchone()
+
+    if not admin or admin[0] != "admin":
+        return "Access Denied"
+
+    # Student Details
+    cursor.execute("""
+        SELECT
+            name,
+            email,
+            phone,
+            role,
+            created_at,
+            profile_pic
+        FROM users
+        WHERE id=%s
+    """, (user_id,))
+
+    student = cursor.fetchone()
+
+    # Quiz Statistics
+    cursor.execute("""
+        SELECT
+            COUNT(*),
+            IFNULL(MAX(percentage),0),
+            IFNULL(AVG(percentage),0),
+            COUNT(DISTINCT subject_id)
+        FROM quiz_attempts
+        WHERE user_id=%s
+    """, (user_id,))
+
+    stats = cursor.fetchone()
+
+    # Subject Wise Best Performance
+
+    cursor.execute("""
+        SELECT
+            subjects.name,
+            MAX(quiz_attempts.percentage)
+        FROM quiz_attempts
+        JOIN subjects
+            ON quiz_attempts.subject_id = subjects.id
+        WHERE quiz_attempts.user_id=%s
+        GROUP BY subjects.id
+        ORDER BY MAX(quiz_attempts.percentage) DESC
+    """, (user_id,))
+
+    subject_performance = cursor.fetchall()
+
+    # Student Quiz Attempt History
+
+    cursor.execute("""
+        SELECT
+            subjects.name,
+            topics.topic_name,
+            quiz_attempts.score,
+            quiz_attempts.percentage,
+            quiz_attempts.attempt_date
+        FROM quiz_attempts
+        JOIN subjects
+            ON quiz_attempts.subject_id = subjects.id
+        JOIN topics
+            ON quiz_attempts.topic_id = topics.id
+        WHERE quiz_attempts.user_id=%s
+        ORDER BY quiz_attempts.attempt_date DESC
+    """, (user_id,))
+
+    attempt_history = cursor.fetchall()
+
+    # Last Attempt Date
+
+    cursor.execute("""
+        SELECT
+            attempt_date
+        FROM quiz_attempts
+        WHERE user_id=%s
+        ORDER BY attempt_date DESC
+        LIMIT 1
+    """, (user_id,))
+
+    last_attempt = cursor.fetchone()
+
+    return render_template(
+        "student_profile.html",
+        student=student,
+        stats=stats,
+        last_attempt=last_attempt,
+        subject_performance=subject_performance,
+        attempt_history=attempt_history
     )
 
 @app.route("/attempts")

@@ -12,7 +12,7 @@
 
                 <h2 class="text-center mb-4">Student Signup</h2>
 
-                <form id="signupForm">
+                <form id="signupForm" enctype="multipart/form-data">
 
                     <div class="mb-3">
                         <label>Name</label>
@@ -24,13 +24,26 @@
                         <input type="email" class="form-control" id="email" placeholder="Enter Email" required>
                     </div>
 
-                    <input
-                    type="text"
-                    id="phone"
-                    placeholder="Enter Contact Number"
-                    required
-                    ><br><br>
+                    <div class="mb-3">
+                        <label>Contact Number</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="phone"
+                            placeholder="Enter Contact Number"
+                            required>
+                    </div>
 
+                    <div class="mb-3">
+                        <label>Profile Photo</label>
+                        <input
+                            type="file"
+                            class="form-control"
+                            id="profile_pic"
+                            name="profile_pic"
+                            accept="image/*">
+                        </div>
+                    
                     <div class="mb-3">
                         <label>Password</label>
                         <input type="password" class="form-control" id="password" placeholder="Enter Password" required>

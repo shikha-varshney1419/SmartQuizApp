@@ -17,9 +17,11 @@
 <div class="text-center mb-4">
 
     <img
-    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+    src="{{ url_for('static', filename='uploads/' + user[5]) }}"
     width="120"
-    class="rounded-circle shadow">
+    height="120"
+    class="rounded-circle shadow"
+    style="object-fit:cover;">
 
     <h3 class="mt-3">
         {{ user[0] }}
@@ -36,9 +38,11 @@
 <div class="col-md-4 text-center">
 
 <img
-src="https://ui-avatars.com/api/?name={{ user[0] }}&background=0D6EFD&color=fff&size=180"
+src="{{ url_for('static', filename='uploads/' + user[5]) }}"
 class="rounded-circle img-thumbnail mb-3"
-width="180">
+width="180"
+height="180"
+style="object-fit:cover;">
 
 <h4>{{ user[0] }}</h4>
 
@@ -173,11 +177,21 @@ width="180">
 
 <div class="text-center mt-4">
 
-<a href="/dashboard" class="btn btn-primary btn-lg">
+    <a href="/edit_profile" class="btn btn-warning btn-lg">
 
-🏠 Back to Dashboard
+        ✏ Edit Profile
 
-</a>
+    </a>
+
+</div>
+
+<div class="text-center mt-3">
+
+    <a href="/dashboard" class="btn btn-primary btn-lg">
+
+        🏠 Back to Dashboard
+
+    </a>
 
 </div>
 

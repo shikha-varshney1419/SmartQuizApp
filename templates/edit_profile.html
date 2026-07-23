@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning text-dark text-center">
+
+                    <h2>✏ Edit Profile</h2>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form
+                        action="/edit_profile"
+                        method="POST"
+                        enctype="multipart/form-data">
+
+                        <!-- Current Photo -->
+
+                        <div class="text-center mb-4">
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + user[3]) }}"
+                                class="rounded-circle shadow"
+                                width="150"
+                                height="150"
+                                style="object-fit:cover;">
+
+                            <br><br>
+
+                            <a href="/remove_profile_photo"
+                               class="btn btn-danger btn-sm">
+
+                                🗑 Remove Photo
+
+                            </a>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Name</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="name"
+                                value="{{ user[0] }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Email</label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                value="{{ user[1] }}"
+                                readonly>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Contact Number</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="phone"
+                                value="{{ user[2] }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Change Profile Photo</label>
+
+                            <input
+                                type="file"
+                                class="form-control"
+                                name="profile_pic"
+                                accept="image/*">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>New Password (Optional)</label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                name="password"
+                                placeholder="Leave blank if you don't want to change">
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success w-100">
+
+                            💾 Save Changes
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

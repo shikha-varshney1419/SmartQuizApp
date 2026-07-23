@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white text-center">
+                    <h2>✏ Edit Student</h2>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+
+                        <!-- Current Profile Photo -->
+
+                        <div class="text-center mb-4">
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + (student[5] if student[5] else 'default.jpg')) }}"
+                                width="140"
+                                height="140"
+                                class="rounded-circle border shadow"
+                                style="object-fit:cover; object-position:center;">
+
+                        </div>
+
+                        <!-- Upload New Photo -->
+
+                        <div class="mb-3">
+
+                            <label><b>Change Profile Photo</b></label>
+
+                            <input
+                                type="file"
+                                class="form-control"
+                                name="profile_pic"
+                                accept="image/*">
+
+                        </div>
+
+                        <!-- Name -->
+
+                        <div class="mb-3">
+
+                            <label><b>Name</b></label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="name"
+                                value="{{ student[1] }}"
+                                required>
+
+                        </div>
+
+                        <!-- Email -->
+
+                        <div class="mb-3">
+
+                            <label><b>Email</b></label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                value="{{ student[2] }}"
+                                readonly>
+
+                        </div>
+
+                        <!-- Phone -->
+
+                        <div class="mb-3">
+
+                            <label><b>Contact Number</b></label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="phone"
+                                value="{{ student[3] }}">
+
+                        </div>
+
+                        <!-- Role -->
+
+                        <div class="mb-3">
+
+                            <label><b>Role</b></label>
+
+                            <select
+                                class="form-select"
+                                name="role">
+
+                                <option
+                                    value="student"
+                                    {% if student[4]=="student" %}selected{% endif %}>
+                                    Student
+                                </option>
+
+                                <option
+                                    value="admin"
+                                    {% if student[4]=="admin" %}selected{% endif %}>
+                                    Admin
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Buttons -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-success w-100">
+
+                            💾 Update Student
+
+                        </button>
+
+                        <a
+                            href="{{ url_for('students') }}"
+                            class="btn btn-secondary w-100 mt-2">
+
+                            ⬅ Back
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

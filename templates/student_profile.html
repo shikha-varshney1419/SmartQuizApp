@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg">
+
+        <div class="card-header bg-primary text-white text-center">
+
+            <h2>👤 Student Profile</h2>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 text-center">
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + (student[5] if student[5] else 'default.jpg')) }}"
+                        width="180"
+                        height="180"
+                        class="rounded-circle img-thumbnail"
+                        style="object-fit:cover; object-position:center;">
+
+                    <h3 class="mt-3">{{ student[0] }}</h3>
+
+                    <span class="badge bg-primary">
+                        {{ student[3]|title }}
+                    </span>
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th width="180">Name</th>
+                            <td>{{ student[0] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ student[1] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Contact No.</th>
+                            <td>{{ student[2] }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Role</th>
+                            <td>{{ student[3]|title }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Joined On</th>
+                            <td>{{ student[4] }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <h3 class="text-center mb-4">
+                📊 Quiz Statistics
+            </h3>
+
+            <div class="row text-center">
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Total Attempts</h6>
+                            <h2 class="text-primary">{{ stats[0] }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Best Score</h6>
+                            <h2 class="text-success">{{ "%.2f"|format(stats[1]) }}%</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Average Score</h6>
+                            <h2 class="text-warning">{{ "%.2f"|format(stats[2]) }}%</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Subjects Attempted</h6>
+                            <h2 class="text-danger">{{ stats[3] }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row justify-content-center mt-4">
+
+                <div class="col-md-5">
+
+                    <div class="card shadow border-info">
+
+                        <div class="card-header bg-info text-white text-center">
+
+                            <h5>🕒 Last Attempt</h5>
+
+                        </div>
+
+                    <div class="card-body text-center">
+
+                            <h5 class="text-dark">
+
+                                {% if last_attempt %}
+
+                                    {{ last_attempt[0] }}
+
+                                {% else %}
+
+                                    No Attempts Yet
+
+                                {% endif %}
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr class="my-5">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-success text-white">
+
+                    📚 Subject Wise Performance
+
+                </div>
+
+            <div class="card-body">
+
+                    {% if subject_performance %}
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>Subject</th>
+
+                                <th width="200">Best Score</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for s in subject_performance %}
+
+                            <tr>
+
+                                <td>{{ s[0] }}</td>
+
+                                <td>
+
+                                    <span class="badge bg-success">
+
+                                        {{ "%.2f"|format(s[1]) }}%
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    {% else %}
+
+                    <div class="alert alert-warning text-center mb-0">
+
+                        No quiz attempts available.
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+            <hr class="my-5">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-dark text-white">
+
+                    📜 Quiz Attempt History
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if attempt_history %}
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>Subject</th>
+
+                                <th>Topic</th>
+
+                                <th>Score</th>
+
+                                <th>Percentage</th>
+
+                                <th>Date</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for a in attempt_history %}
+
+                            <tr>
+
+                                <td>{{ a[0] }}</td>
+
+                                <td>{{ a[1] }}</td>
+
+                                <td>{{ a[2] }}</td>
+
+                                <td>
+
+                                    <span class="badge bg-primary">
+
+                                        {{ "%.2f"|format(a[3]) }}%
+
+                                    </span>
+
+                                </td>
+
+                                <td>{{ a[4] }}</td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    {% else %}
+
+                    <div class="alert alert-warning text-center">
+
+                        No quiz attempts found.
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-4">
+
+                <a href="/students" class="btn btn-primary">
+
+                    ⬅ Back to Student Management
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
