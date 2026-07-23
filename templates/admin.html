@@ -384,8 +384,18 @@ onclick="return confirm('Delete this question?')">
 
                         <td>
 
+                            {% if t[1] and t[1].startswith('http') %}
+                                {% set img = t[1] %}
+                            {% elif t[1] == 'default.jpg' %}
+                                {% set img = url_for('static', filename='uploads/default.jpg') %}
+                            {% elif t[1] %}
+                                {% set img = url_for('static', filename='uploads/' + t[1]) %}
+                            {% else %}
+                                {% set img = url_for('static', filename='uploads/default.jpg') %}
+                            {% endif %}
+
                             <img
-                                src="{{ t[1] if t[1] else url_for('static', filename='uploads/default.jpg') }}"
+                                src="{{ img }}"
                                 width="40"
                                 height="40"
                                 class="rounded-circle"
