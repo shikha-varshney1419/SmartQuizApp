@@ -17,7 +17,7 @@
 <div class="text-center mb-4">
 
     <img
-    src="{{ url_for('static', filename='uploads/' + user[5]) }}"
+    src="{{ user[5] if user[5] and user[5].startswith('http') else url_for('static', filename='uploads/' + (user[5] if user[5] else 'default.jpg')) }}"
     width="120"
     height="120"
     class="rounded-circle shadow"
@@ -38,7 +38,7 @@
 <div class="col-md-4 text-center">
 
 <img
-src="{{ url_for('static', filename='uploads/' + user[5]) }}"
+src="{{ user[5] if user[5] and user[5].startswith('http') else url_for('static', filename='uploads/' + (user[5] if user[5] else 'default.jpg')) }}"
 class="rounded-circle img-thumbnail mb-3"
 width="180"
 height="180"

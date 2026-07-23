@@ -2,9 +2,21 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from dotenv import load_dotenv
 import pymysql
 import os
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 from werkzeug.utils import secure_filename
 
 load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -401,10 +413,14 @@ def leaderboard():
     cursor = get_db().cursor()
 
     cursor.execute("""
-        SELECT u.name, MAX(q.percentage) AS best_score
+        SELECT
+            u.name,
+            MAX(q.percentage) AS best_score,
+            u.profile_pic
         FROM quiz_attempts q
-        JOIN users u ON q.user_id = u.id
-        GROUP BY q.user_id
+        JOIN users u
+            ON q.user_id = u.id
+        GROUP BY q.user_id, u.name, u.profile_pic
         ORDER BY best_score DESC
         LIMIT 10
     """)
@@ -655,18 +671,13 @@ def edit_profile():
 
         if file and file.filename != "":
 
-            filename = secure_filename(file.filename)
+            result = cloudinary.uploader.upload(file)
 
-            upload_folder = os.path.join(app.root_path, "..", "static", "uploads")
-            upload_folder = os.path.abspath(upload_folder)
-
-            os.makedirs(upload_folder, exist_ok=True)
-
-            file.save(os.path.join(upload_folder, filename))
+            image_url = result["secure_url"]
 
             cursor.execute(
                 "UPDATE users SET profile_pic=%s WHERE id=%s",
-                (filename, session["user_id"])
+                (image_url, session["user_id"])
             )
 
         if password.strip() == "":
@@ -1396,15 +1407,10 @@ def admin_edit_student(user_id):
 
         if file and file.filename != "":
 
-            filename = secure_filename(file.filename)
+            result = cloudinary.uploader.upload(file)
 
-            upload_folder = os.path.join(app.root_path, "..", "static", "uploads")
-            upload_folder = os.path.abspath(upload_folder)
-
-            os.makedirs(upload_folder, exist_ok=True)
-
-            file.save(os.path.join(upload_folder, filename))
-
+            filename = result["secure_url"]
+            
         cursor.execute("""
             UPDATE users
             SET

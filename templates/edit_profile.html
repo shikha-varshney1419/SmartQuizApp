@@ -28,7 +28,7 @@
                         <div class="text-center mb-4">
 
                             <img
-                                src="{{ url_for('static', filename='uploads/' + user[3]) }}"
+                                src="{{ user[3] if user[3] and user[3].startswith('http') else url_for('static', filename='uploads/' + (user[3] if user[3] else 'default.jpg')) }}"
                                 class="rounded-circle shadow"
                                 width="150"
                                 height="150"

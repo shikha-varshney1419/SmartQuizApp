@@ -65,7 +65,16 @@
                     </td>
 
                     <td class="fw-bold">
+
+                        <img
+                            src="{{ leaders[i][2] if leaders[i][2] and leaders[i][2].startswith('http') else url_for('static', filename='uploads/' + (leaders[i][2] if leaders[i][2] else 'default.jpg')) }}"
+                             width="45"
+                            height="45"
+                            class="rounded-circle me-2"
+                            style="object-fit:cover;">
+
                         {{ leaders[i][0] }}
+
                     </td>
 
                     <td>

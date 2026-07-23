@@ -71,7 +71,7 @@
                 <td>
 
                     <img
-                        src="{{ url_for('static', filename='uploads/' + (s[8] if s[8] else 'default.jpg')) }}"
+                        src="{{ s[8] if s[8] and s[8].startswith('http') else url_for('static', filename='uploads/' + (s[8] if s[8] else 'default.jpg')) }}"
                         width="60"
                         height="60"
                         class="rounded-circle"

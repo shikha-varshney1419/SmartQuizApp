@@ -19,7 +19,7 @@
                 <div class="col-md-4 text-center">
 
                     <img
-                        src="{{ url_for('static', filename='uploads/' + (student[5] if student[5] else 'default.jpg')) }}"
+                        src="{{ student[5] if student[5] and student[5].startswith('http') else url_for('static', filename='uploads/' + (student[5] if student[5] else 'default.jpg')) }}" 
                         width="180"
                         height="180"
                         class="rounded-circle img-thumbnail"
