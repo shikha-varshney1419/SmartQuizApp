@@ -385,12 +385,11 @@ onclick="return confirm('Delete this question?')">
                         <td>
 
                             <img
-                                src="{{ url_for('static', filename='uploads/' + (t[1] if t[1] else 'default.jpg')) }}"
+                                src="{{ t[1] if t[1] else url_for('static', filename='uploads/default.jpg') }}"
                                 width="40"
                                 height="40"
                                 class="rounded-circle"
                                 style="object-fit:cover;">
-
                         </td>
 
                         <td>{{ t[0] }}</td>

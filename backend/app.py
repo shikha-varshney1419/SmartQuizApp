@@ -671,7 +671,10 @@ def edit_profile():
 
         if file and file.filename != "":
 
-            result = cloudinary.uploader.upload(file)
+            result = cloudinary.uploader.upload(
+                file,
+                folder="smartquiz_profiles"
+            )
 
             image_url = result["secure_url"]
 
@@ -1407,10 +1410,13 @@ def admin_edit_student(user_id):
 
         if file and file.filename != "":
 
-            result = cloudinary.uploader.upload(file)
+            result = cloudinary.uploader.upload(
+                file,
+                folder="smartquiz_profiles"
+            )
 
             filename = result["secure_url"]
-            
+
         cursor.execute("""
             UPDATE users
             SET
