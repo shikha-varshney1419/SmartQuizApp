@@ -27,13 +27,26 @@
                     </div>
 
                     <div class="mb-3">
+
                         <label class="form-label">Password</label>
-                        <input
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            placeholder="Enter Password"
-                            required>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                placeholder="Enter Password"
+                                required>
+
+                            <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
+
+                                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+
+                            </span>
+
+                        </div>
+
                     </div>
 
                     <div class="text-end mb-3">
@@ -62,6 +75,31 @@
     </div>
 
 </div>
+
+<script>
+
+function togglePassword() {
+
+    var password = document.getElementById("password");
+    var eye = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+        eye.classList.remove("fa-eye");
+        eye.classList.add("fa-eye-slash");
+
+    } else {
+
+        password.type = "password";
+        eye.classList.remove("fa-eye-slash");
+        eye.classList.add("fa-eye");
+
+    }
+
+}
+
+</script>
 
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 
