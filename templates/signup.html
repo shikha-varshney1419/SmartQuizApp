@@ -45,8 +45,29 @@
                         </div>
                     
                     <div class="mb-3">
+
                         <label>Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter Password" required>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                placeholder="Enter Password"
+                                required>
+
+                            <span
+                                class="input-group-text"
+                                onclick="togglePassword()"
+                                style="cursor:pointer;">
+
+                                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+
+                            </span>
+
+                        </div>
+
                     </div>
 
                     <button type="submit" class="btn btn-success w-100">
