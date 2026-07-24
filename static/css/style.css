@@ -158,3 +158,27 @@ input[type="radio"]{
 }
 
 }
+
+/* Sticky Quiz Timer */
+
+#stickyTimer{
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    background: white;
+
+    padding: 12px;
+
+    text-align: center;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+    border: 2px solid #dc3545;
+
+}

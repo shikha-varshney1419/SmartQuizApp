@@ -8,12 +8,17 @@
         📝 {{ topic_name }}
     </h2>
 
-    <!-- Timer -->
-    <div class="text-center mb-4">
-        <h3 class="text-danger">
+    <!-- Sticky Timer -->
+
+    <div id="stickyTimer" class="shadow">
+
+        <h4 class="mb-0 text-danger fw-bold">
+
             ⏳ Time Left:
             <span id="timer">10:00</span>
-        </h3>
+
+        </h4>
+
     </div>
 
     <form action="/submit_quiz/{{ subject_id }}/{{ topic_id }}" method="POST">
